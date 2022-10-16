@@ -15,6 +15,6 @@ zoomcontroller();
 
 <sub>
   
-  #### [file](https://github.com/nsqx/zoomController.js/blob/main/zoomController.js) | [min](https://github.com/nsqx/zoomController.js/blob/main/zoomController.min.js)
+  #### [file](https://github.com/nsqx/js-projects/blob/main/zoomController.js/zoomController.js) | [min](https://github.com/nsqx/js-projects/blob/main/zoomController.js/zoomController.min.js)
 
 </sub>
