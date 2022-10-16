@@ -1,4 +1,4 @@
-# typewriter.js [#]("#")
+# typewriter.js [#](#)
 
 A small Javascript module that creates a basic typewriter animation in DOM.
 ### Demo
