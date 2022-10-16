@@ -13,6 +13,6 @@ typewriter(document.querySelector("div.text#animatedTypeWriter"), ["walter white
 
 <sub>
   
-  #### [file](https://github.com/nsqx/typewriter.js/blob/main/typewriter.js) | [min](https://github.com/nsqx/typewriter.js/blob/main/typewriter.min.js)
+  #### [file](https://github.com/nsqx/js-projects/blob/main/typewriter.js/typewriter.js) | [min](https://github.com/nsqx/js-projects/blob/main/typewriter.js/typewriter.min.js)
 
 </sub>
