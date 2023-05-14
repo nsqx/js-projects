@@ -1,26 +1,34 @@
-# animator.js [#](#)
-A versatile JavaScript interface extending on the HTMLElement prototype which enables the versatile animation of both CSS and non-CSS properties.
+# Animator.js [#](#)
+A versatile and low-level JavaScript interface (class) which enables the animation of both CSS and non-CSS properties via custom functions.
 
 ```typescript
-/**
- * animation.js v0.0.0.1 by https://github.com/nsqx
- * @interface
- */
- HTMLElement.prototype.animator: {
-   duration: 1,
-   onPause(obj) {},
-   onEnd(obj) {},
-   onIterate(obj) {},
-   onStart(obj) {},
-   indefinite: false,
-   timingFunction(t) { return t },
-   updateFrame(v) {},
-   iteration: [internal$].iteration,
-   pause() { [internal$].pause() },
-   play() { [internal$].play() },
-   reset() { [internal$].reset() },
-   stop() { [internal$].stop() }
- }
+/* Animation.js v0.0.0.1 by https://github.com/nsqx */
+class Animator {
+  duration: 1,
+  onPause(obj) {},
+  onEnd(obj) {},
+  onIterate(obj) {},
+  onStart(obj) {},
+  indefinite: false,
+  timingFunction(t) { return t },
+  updateFrame(v) {},
+  destroy() { [internal$].destroy() }.
+  iteration: [internal$].iteration,
+  pause() { [internal$].pause() },
+  play() { [internal$].play() },
+  reset() { [internal$].reset() },
+  stop() { [internal$].stop() }
+}
+```
+
+## usage
+```javascript
+let animatorController = new Animator({duration: 1, onPause: function, onEnd: function, onIterate: function, onStart: function, indefinite: false, timingFunction: function, updateFrame: function});
+```
+Example:
+```javascript
+let animatorController = new Animator({duration: 1, onEnd: console.log, timingFunction: CubicBezierGenerator(.25, .1, .25, 1), updateFrame(v){element.style.transform = `translateX(${v * 100}px)`} });
+animatorController.play();
 ```
 
 ## interface
@@ -51,6 +59,9 @@ A versatile JavaScript interface extending on the HTMLElement prototype which en
 `updateFrame(v)`
 > A function which is called at regular (~16ms) intervals when the animation target needs to be updated. This function is passed the result of `timingFunction(t)`, where `t` is the percent progress of the animation in decimal form.
 
+`destroy()`
+> Destroys the Animator controller. Recommended to be called after an animation ends for garbage collection.
+
 `iteration`
 > How many iterations of the animation have run, when `indefinite` is true.
 
@@ -68,6 +79,6 @@ A versatile JavaScript interface extending on the HTMLElement prototype which en
 
 <sub>
   
-  #### [file](animator.js) | [min](animator.min.js)
+  #### [file](Animator.js) | [min](Animator.min.js)
 
 </sub>
