@@ -1,2 +1,2 @@
 # js-projects
-A collection of small and neat JavaScript projects I made
+A collection of JavaScript projects I have completed
