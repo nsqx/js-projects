@@ -2,7 +2,7 @@
 A versatile and low-level JavaScript interface (class) which enables the animation of both CSS and non-CSS properties via custom functions.
 
 ```typescript
-/* Animation.js v0.0.0.1 by https://github.com/nsqx */
+/* Animator.js by https://github.com/nsqx */
 class Animator {
   duration: 1,
   onPause(obj) {},
