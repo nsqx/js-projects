@@ -5,7 +5,7 @@ JSONElement = {
   create(element) {
     async function JSONElement(element) {
       var _ = {
-        tagName: element.nodeName.toLowerCase(),
+        tag: element.nodeName.toLowerCase(),
         attributes: {},
       }
       for (var attr of element.attributes) {
@@ -37,29 +37,31 @@ JSONElement = {
   
     return JSONElement(element);
   },
+
+
   stringify(JSON) {
     var voidTags = ["area", "base", "br", "col", "embed", "hr", "img", "input", "keygen", "link", "meta", "param", "source", "track", "wbr"];
   
     async function process(obj) {
       var attrSoup = formatAttributes(obj.attributes);
       var queue = "";
-      if (voidTags.includes(obj.tagName)) {
-        queue = "<" + obj.tagName + attrSoup + "/>";
+      if (voidTags.includes(obj.tag)) {
+        queue = "<" + obj.tag + attrSoup + "/>";
       } else {
-        queue = "<" + obj.tagName + attrSoup + ">"
+        queue = "<" + obj.tag + attrSoup + ">"
         if (obj.contents){
           for (var content of obj.contents) {
             if (typeof content == "string") {
               queue += content;
             } else {
-              await process(content).then(contentString => {
-                queue += contentString;
+              await process(content).then(contentStr => {
+                queue += contentStr;
               });
             }
           }
         }
       }
-      queue += "</" + obj.tagName + ">";
+      queue += "</" + obj.tag + ">";
       return queue;
     }
   
@@ -69,6 +71,30 @@ JSONElement = {
         attrSoup += " " + attr + "=\"" + attrs[attr] + "\"";
       }
       return attrSoup;
+    }
+  
+    return process(JSON);
+  },
+
+
+  restore(JSON) {  
+    async function process(obj) {
+      var returns = document.createElement(obj.tag);
+      for (var attr in obj.attributes) {
+        returns.setAttribute(attr, obj.attributes[attr]);
+      }
+      if (obj.contents){
+        for (var content of obj.contents) {
+          if (typeof content == "string") {
+            returns.appendChild(document.createTextNode(content));
+          } else {
+            await process(content).then(contentObj => {
+              returns.appendChild(contentObj);
+            });
+          }
+        }
+      }
+      return returns;
     }
   
     return process(JSON);
