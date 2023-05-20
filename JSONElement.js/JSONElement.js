@@ -29,9 +29,11 @@ JSONElement = {
   
     async function traverse(element) {
       var contents = [];
-      await element.childNodes.forEach(node => {
-        process(node).then(content => {contents.push(content)});
-      })
+      for (var node in element.childNodes) {
+        if (node <= element.childNodes.length){
+          await process(element.childNodes[node]).then(content => {contents[node] = content});
+        }
+      }
       return contents;
     }
   
@@ -44,24 +46,25 @@ JSONElement = {
   
     async function process(obj) {
       var attrSoup = formatAttributes(obj.attributes);
-      var queue = "";
+      var queue = [];
       if (voidTags.includes(obj.tag)) {
-        queue = "<" + obj.tag + attrSoup + "/>";
-      } else {
-        queue = "<" + obj.tag + attrSoup + ">"
-        if (obj.contents){
-          for (var content of obj.contents) {
-            if (typeof content == "string") {
-              queue += content;
-            } else {
-              await process(content).then(contentStr => {
-                queue += contentStr;
-              });
-            }
+        queue[0] = "<" + obj.tag + attrSoup + "/>";
+      } else if (obj.contents) {
+        queue[0] = "<" + obj.tag + attrSoup + ">";
+        for (var content in obj.contents) {
+          if (content > obj.contents.length) { break }
+          if (typeof obj.contents[content] == "string") {
+            queue[+content+1] = obj.contents[content];
+          } else {
+            await process(obj.contents[content]).then(returns => {
+            queue[+content+1] = returns.join("");
+            });
           }
         }
+      } else {
+        queue[0] = "<" + obj.tag + attrSoup + ">";
       }
-      queue += "</" + obj.tag + ">";
+      queue.push("</" + obj.tag + ">");
       return queue;
     }
   
@@ -72,29 +75,38 @@ JSONElement = {
       }
       return attrSoup;
     }
+
+    async function init(JSON) {
+      return process(JSON).then(_ => {return _.join("")})
+    }
   
-    return process(JSON);
+    return init(JSON);
   },
 
 
   restore(JSON) {  
     async function process(obj) {
-      var returns = document.createElement(obj.tag);
+      var queue = [];
+      var container = document.createElement(obj.tag);
       for (var attr in obj.attributes) {
-        returns.setAttribute(attr, obj.attributes[attr]);
+        container.setAttribute(attr, obj.attributes[attr]);
       }
       if (obj.contents){
-        for (var content of obj.contents) {
-          if (typeof content == "string") {
-            returns.appendChild(document.createTextNode(content));
+        for (var content in obj.contents) {
+          if (content > obj.contents.length) { break }
+          if (typeof obj.contents[content] == "string") {
+            queue[content] = document.createTextNode(obj.contents[content]);
           } else {
-            await process(content).then(contentObj => {
-              returns.appendChild(contentObj);
+            await process(obj.contents[content]).then(returns => {
+              queue[content] = returns;
             });
           }
         }
+        for (var element of queue) {
+          container.appendChild(element);
+        }
       }
-      return returns;
+      return container;
     }
   
     return process(JSON);
